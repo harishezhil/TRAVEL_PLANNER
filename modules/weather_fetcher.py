@@ -1,6 +1,7 @@
 import os
 import requests
 from datetime import datetime, timedelta
+from utils.context import Context
 
 class WeatherFetcher:
     def __init__(self):
@@ -39,3 +40,14 @@ class WeatherFetcher:
                 })
 
         return weather_list
+
+def run(context: Context) -> Context:
+    """
+    MCP Step: Updates context with weather.
+    Reads: context['user_input']
+    Writes: context['weather']
+    """
+    context.validate()
+    # ...module logic...
+    context.validate()
+    return context

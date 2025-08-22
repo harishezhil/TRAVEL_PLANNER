@@ -82,8 +82,14 @@ def _get_events_by_city(city, start_date, end_date):
     return events
 
 
-def run(state):
-    user_input = state.get("user_input", {})
+def run(context):
+    """
+    MCP Step: Updates context with weather.
+    Reads: context['user_input']
+    Writes: context['weather']
+    """
+    context.validate()
+    user_input = context.get("user_input", {})
     destination = user_input.get("destination", "unknown")
     dates = user_input.get("dates", [])
     start_date = dates[0] if dates else datetime.utcnow().strftime("%Y-%m-%d")
@@ -98,13 +104,14 @@ def run(state):
 
     popular_places = [f"Top sights in {destination} - search via Places API"]
 
-    state["destination_info"] = {
+    context["destination_info"] = {
         "destination": destination,
         "weather": weather,
         "events": events,
         "popular_places": popular_places
     }
-    return state
+    context.validate()
+    return context
 
 
 

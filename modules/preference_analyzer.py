@@ -1,7 +1,13 @@
 # modules/preference_analyzer.py
-def run(state):
-    """Analyze user preferences into activity tags."""
-    interests = state.get("user_input", {}).get("interests", [])
+from utils.context import Context
+def run(context: Context) -> Context:
+    """
+    MCP Step: Updates context with weather.
+    Reads: context['user_input']
+    Writes: context['weather']
+    """
+    context.validate()
+    interests = context.get("user_input", {}).get("interests", [])
     preferences = []
     if "food" in interests:
         preferences.append("food tour")
@@ -13,5 +19,6 @@ def run(state):
         preferences.append("local market")
     if "nightlife" in interests:
         preferences.append("evening live music")
-    state["activity_preferences"] = preferences
-    return state
+    context["activity_preferences"] = preferences
+    context.validate()
+    return context

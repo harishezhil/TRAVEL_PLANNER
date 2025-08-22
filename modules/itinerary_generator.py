@@ -28,18 +28,24 @@ def _suggest_activities(preferences, weather_condition):
 
     return prefs
 
-def run(state):
-    user_input = state.get("user_input", {})
+def run(context):
+    """
+    MCP Step: Updates context with weather.
+    Reads: context['user_input']
+    Writes: context['weather']
+    """
+    context.validate()
+    user_input = context.get("user_input", {})
     dates = user_input.get("dates", [])
     if not dates:
-        state["itinerary_plan"] = {"error": "No dates provided"}
-        return state
+        context["itinerary_plan"] = {"error": "No dates provided"}
+        return context
 
     start_date, end_date = dates[0], dates[1] if len(dates) > 1 else dates[0]
     days = _daterange(start_date, end_date)
 
-    preferences = state.get("activity_preferences", [])
-    destination_info = state.get("destination_info", {})
+    preferences = context.get("activity_preferences", [])
+    destination_info = context.get("destination_info", {})
     destination = destination_info.get("destination", user_input.get("destination", "Unknown"))
     weather_data = destination_info.get("weather", {}).get("summary", {})
     popular_places = destination_info.get("popular_places", [])
@@ -74,8 +80,9 @@ def run(state):
     budget_map = {"low": 50, "medium": 150, "high": 400}  # per day USD approx
     itinerary["budget_estimate_per_day_usd"] = budget_map.get(budget_level, 150)
 
-    state["itinerary_plan"] = itinerary
-    return state
+    context["itinerary_plan"] = itinerary
+    context.validate()
+    return context
 
 
 
